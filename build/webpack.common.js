@@ -45,7 +45,12 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
+          isDevelopment ? "style-loader" : {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../'
+            }
+          },
           "css-loader",
         ],
       },
@@ -75,5 +80,5 @@ module.exports = {
       inject: true,
     }),
     new WebpackBar(),
-  ].filter(Boolean),
+  ],
 };

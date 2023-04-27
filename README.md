@@ -10,11 +10,11 @@
 
 - 别名`alias`配置
 
-- `css`处理：开发阶段使用`style-loader`，生产阶段使用`MiniCssExtractPlugin`进行压缩
+- `css`处理：开发阶段使用`style-loader`，生产阶段使用`mini-css-extract-plugin`进行处理，并使用`css-minimizer-webpack-plugin`进行`css`代码压缩
 
-- 生产打包产物使用`CompressionPlugin`压缩为`gzip`
+- 生产打包产物使用`compression-webpack-plugin`压缩为`gzip`
 
-- 在`TerserPlugin`中启用`swcMinify`
+- 在`terser-webpack-plugin`中启用`swcMinify`
 
 - 使用`thread-loader`给`swc-loader`单独分配进程（项目小的情况下构建时长会增加）
 

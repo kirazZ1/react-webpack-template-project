@@ -5,25 +5,29 @@ const common = require("./webpack.common");
 const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
-module.exports = merge(common,{
-  mode: "production", 
+module.exports = merge(common, {
+  mode: "production",
   devtool: false,
   output: {
     clean: true,
-    filename: 'js/[name].[contenthash:5].js',         
+    filename: "js/[name].[contenthash:5].js",
     chunkFilename: "[name].[contenthash:5].chunk.js",
-    publicPath: '/',
-    path: path.resolve(__dirname, '../dist')
+    publicPath: "/",
+    path: path.resolve(__dirname, "../dist"),
   },
   optimization: {
     runtimeChunk: true,
-    minimizer: [new TerserPlugin({
-      minify: TerserPlugin.swcMinify, 
-      extractComments: false,
-    })],
+    minimizer: [
+      new TerserPlugin({
+        minify: TerserPlugin.swcMinify,
+        extractComments: false,
+      }),
+      new CssMinimizerPlugin(),
+    ],
     splitChunks: {
-      chunks: 'all',
+      chunks: "all",
       maxInitialRequests: Infinity,
       minSize: 0,
       cacheGroups: {
@@ -33,14 +37,13 @@ module.exports = merge(common,{
             const packageName = module.context.match(
               /[\\/]node_modules[\\/](.*?)([\\/]|$)/g
             )[1];
-            console.log(module.context)
             return `npm.${packageName.replace("@", "")}`;
           },
         },
       },
     },
   },
-  plugins:[
+  plugins: [
     new MiniCssExtractPlugin({
       filename: "assets/[name].css",
     }),
@@ -50,6 +53,6 @@ module.exports = merge(common,{
       algorithm: "gzip",
       test: /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i,
       minRatio: 0.8,
-    })
-  ]
+    }),
+  ],
 });
