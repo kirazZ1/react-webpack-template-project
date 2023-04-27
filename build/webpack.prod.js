@@ -4,6 +4,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const common = require("./webpack.common");
 const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = merge(common,{
   mode: "production", 
@@ -23,10 +24,32 @@ module.exports = merge(common,{
     })],
     splitChunks: {
       chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 0,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name(module) {
+            const packageName = module.context.match(
+              /[\\/]node_modules[\\/](.*?)([\\/]|$)/g
+            )[1];
+            console.log(module.context)
+            return `npm.${packageName.replace("@", "")}`;
+          },
+        },
+      },
     },
   },
   plugins:[
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "assets/[name].css",
+    }),
     new CleanWebpackPlugin(),
+    new CompressionPlugin({
+      filename: "[path][base].gz",
+      algorithm: "gzip",
+      test: /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i,
+      minRatio: 0.8,
+    })
   ]
 });

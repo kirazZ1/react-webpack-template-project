@@ -3,12 +3,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackBar = require("webpackbar");
 const isDevelopment = process.env.NODE_ENV !== "production";
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CompressionPlugin = require("compression-webpack-plugin");
 
 console.log(process.env.NODE_ENV);
 module.exports = {
   resolve: {
-    extensions: [".tsx", ".ts", ".jsx", ".js"],
+    extensions: [".tsx", ".ts", ".jsx", ".js", ".css"],
     alias: {
       "@": path.resolve(process.cwd(), "./src"),
     },
@@ -46,8 +45,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          ...(isDevelopment ? [] : [MiniCssExtractPlugin.loader]),
-          "style-loader",
+          isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
           "css-loader",
         ],
       },
@@ -75,12 +73,6 @@ module.exports = {
       hash: true,
       template: path.resolve(__dirname, "../index.html"),
       inject: true,
-    }),
-    isDevelopment ? false : new CompressionPlugin({
-      filename: "[path][base].gz",
-      algorithm: "gzip",
-      test: /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i,
-      minRatio: 0.8,
     }),
     new WebpackBar(),
   ].filter(Boolean),
